@@ -1,10 +1,12 @@
 "use client";
 import React, { useEffect, useRef } from 'react';
 import { useSimulation } from '../context/SimulationContext';
+import { dict } from '../i18n/dictionary';
 import { Terminal } from 'lucide-react';
 
 export default function TerminalLog() {
-  const { logs } = useSimulation();
+  const { lang, logs } = useSimulation();
+  const ui = dict[lang].ui;
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,6 +23,14 @@ export default function TerminalLog() {
   };
 
   const getPrefix = (type: string) => {
+    if (lang === 'ka') {
+      switch(type) {
+        case 'error': return '[კრიტ] ';
+        case 'warn': return '[ყურადღება] ';
+        case 'success': return '[ OK ] ';
+        default: return '[ინფო] ';
+      }
+    }
     switch(type) {
       case 'error': return '[CRIT] ';
       case 'warn': return '[WARN] ';
@@ -33,7 +43,7 @@ export default function TerminalLog() {
     <div className="bg-black/80 border border-slate-800 rounded-lg flex flex-col h-[400px] font-mono text-xs shadow-2xl overflow-hidden">
       <div className="bg-slate-900 border-b border-slate-800 p-3 flex items-center gap-2 text-slate-500 shrink-0">
         <Terminal className="w-4 h-4" />
-        <span className="uppercase tracking-widest font-semibold">System Telemetry Log</span>
+        <span className="uppercase tracking-widest font-semibold">{ui.terminalHeader}</span>
       </div>
       
       <div className="p-4 overflow-y-auto flex-1 space-y-2 scroll-smooth">

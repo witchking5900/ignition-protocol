@@ -13,16 +13,17 @@ export default function PharmaOverride() {
   } = useSimulation();
 
   const t = dict[lang].pharma;
+  const l = dict[lang].logs;
 
   const deployNSAID = () => {
     if (nsaidCount <= 0 || nsaidActive) return;
     setNsaidCount(0);
     setNsaidActive(true);
-    addLog('NSAID Deployed: COX-enzymes inhibited. Tissue damage halted for 15s.', 'success');
+    addLog(l.nsaidDeployed, 'success');
     
     setTimeout(() => {
       setNsaidActive(false);
-      addLog('NSAID metabolized. COX-enzyme synthesis resuming.', 'warn');
+      addLog(l.nsaidMetabolized, 'warn');
     }, 15000);
   };
 
@@ -31,10 +32,9 @@ export default function PharmaOverride() {
     setSteroidCount(0);
     setSteroidActive(true);
     
-    // Brutal pharmacological effect: forces vessels closed, wipes out the swarm
     setPermeability(0);
     setLeukocytes((prev) => Math.max(0, prev - 50));
-    addLog('Corticosteroids Deployed: Vascular permeability violently suppressed. Leukocytes depleted.', 'warn');
+    addLog(l.steroidDeployed, 'warn');
     
     setTimeout(() => {
       setSteroidActive(false);
@@ -49,7 +49,6 @@ export default function PharmaOverride() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* NSAID Button */}
         <button
           onClick={deployNSAID}
           disabled={nsaidCount <= 0 || nsaidActive}
@@ -71,7 +70,6 @@ export default function PharmaOverride() {
           {nsaidActive && <div className="absolute bottom-0 left-0 h-1 bg-indigo-500 animate-[fastFlow_15s_linear_1]" />}
         </button>
 
-        {/* CORTICOSTEROID Button */}
         <button
           onClick={deploySteroid}
           disabled={steroidCount <= 0 || steroidActive}

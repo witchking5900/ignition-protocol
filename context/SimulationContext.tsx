@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
-import { Language } from '../i18n/dictionary';
+import { Language, dict } from '../i18n/dictionary';
 
 export interface LogEntry { id: string; time: string; message: string; type: 'info' | 'warn' | 'error' | 'success'; }
 export interface ChartDataPoint { time: string; pathogen: number; tissue: number; }
@@ -40,7 +40,6 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   const [steroidCount, setSteroidCount] = useState(1);
   const [nsaidActive, setNsaidActive] = useState(false);
   const [steroidActive, setSteroidActive] = useState(false);
-  
   const [complementStep, setComplementStep] = useState(0);
   const [macDeployed, setMacDeployed] = useState(false);
   
@@ -49,7 +48,6 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
     return types[Math.floor(Math.random() * types.length)];
   };
   const [pathogenType, setPathogenType] = useState<PathogenType>('LPS');
-
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
 
@@ -65,7 +63,12 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setPathogenType(getRandomPathogen());
-    addLog('SYSTEM BOOT: Immune protocol initialized.', 'info');
+    setLogs([{
+      id: 'boot',
+      time: new Date().toLocaleTimeString('ka-GE', { hour12: false }),
+      message: dict['ka'].logs.boot,
+      type: 'info'
+    }]);
   }, []);
 
   useEffect(() => {
@@ -95,7 +98,7 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
     setPhase(1); setAdhesionStep(0); setNsaidCount(1); setSteroidCount(1);
     setNsaidActive(false); setSteroidActive(false); setComplementStep(0); setMacDeployed(false);
     setChartData([]); setPathogenType(getRandomPathogen());
-    addLog('System Purge: New Patient Generated.', 'error');
+    addLog(dict[lang].logs.purge, 'error');
   };
 
   return (
